@@ -52,6 +52,38 @@ describe('TodoMVC - React', function () {
       win.document.activeElement.blur()
     })
   })
+//1st test
+  it('adds a todo item and marks it as completed', function () {
+    cy.get('.new-todo').type('learn testing{enter}')
+    cy.get('.todo-list li').first().find('.toggle').click()
+    cy.get('.todo-list li').first().should('have.class', 'completed')
+  });
+//2nd test
+  it ('edits an existing todo item', function () {
+    cy.get('.new-todo').type(TODO_ITEM_ONE + '{enter}')
+    cy.get('.todo-list li').first().dblclick()
+    cy.get('.todo-list li').first().find('.edit').type('{selectall}').type('buy some milk{enter}')
+    cy.get('.todo-list li').should('contain', 'buy some milk')
+  });
+//3rd test
+  it ('deletes a todo item', function () {
+    cy.get('.new-todo').type(TODO_ITEM_ONE + '{enter}')
+    cy.get ('.todo-list li').first().find('.destroy').invoke('show').click()
+    cy.get('.todo-list li').should('have.length', 0)
+  });
+//4th test
+  it('filters todo items based on their completion status', function () {
+    cy.get('.new-todo').type(TODO_ITEM_ONE + '{enter}')
+    cy.get('.new-todo').type(TODO_ITEM_TWO + '{enter}')
+    cy.get('.new-todo').type(TODO_ITEM_THREE + '{enter}')
+    cy.get('.todo-list li').first().find('.toggle').click()
+    cy.contains('Active').click()
+    cy.get('.todo-list li').should('have.length', 2)
+    cy.contains('Completed').click()
+    cy.get('.todo-list li').should('have.length', 1)
+    cy.contains('All').click()
+    cy.get('.todo-list li').should('have.length', 3)
+  })
 
   // a very simple example helpful during presentations
   it('adds 2 todos', function () {
